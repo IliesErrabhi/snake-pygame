@@ -4,7 +4,9 @@ from .constants import *
 class Snake:
     def __init__(self):
         #self.body[0] is the head
-        self.body = [[100, 100], [90, 100], [80, 100]]
+        middleX = SCREEN_HEIGHT // 2
+        middleY = SCREEN_WIDTH //  2
+        self.body = [[middleX,middleY], [middleX - 1, middleY - 1], [middleX - 2, middleY - 2]]
         self.direction = "RIGHT"
         self.grow = False                               # tells whether the snake ate an apple or not
 

@@ -1,5 +1,5 @@
 import pygame
-from src.constants import FPS
+from src.constants import *
 from src.snake import *
 from src.apple import *
 
@@ -21,7 +21,7 @@ def gameover(surface):
     font = pygame.font.SysFont("Arial", 60)
     
     # 2. image creation 
-    text_surface = font.render("Game over 😂🫵🏼", True, (255, 255, 255))
+    text_surface = font.render("Game over hahaha", True, (255, 255, 255))
     
     # 3. Center the message
     text_rect = text_surface.get_rect(center=(1280 // 2, 720 // 2))
@@ -44,16 +44,16 @@ while running:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 running = False
-            if event.key == pygame.K_LEFT  and snake.direction != "RIGHT":
+            elif event.key == pygame.K_LEFT  and snake.direction != "RIGHT":
                 print("LEFT")
                 snake.direction = "LEFT"
-            if event.key == pygame.K_RIGHT and snake.direction != "LEFT":
+            elif event.key == pygame.K_RIGHT and snake.direction != "LEFT":
                 print("RIGHT")
                 snake.direction = "RIGHT"
-            if event.key == pygame.K_UP    and snake.direction != "DOWN":
+            elif event.key == pygame.K_UP    and snake.direction != "DOWN":
                 print("UP")
                 snake.direction = "UP"
-            if event.key == pygame.K_DOWN  and snake.direction != "UP":
+            elif event.key == pygame.K_DOWN  and snake.direction != "UP":
                 print("DOWN")
                 snake.direction = "DOWN"
 
