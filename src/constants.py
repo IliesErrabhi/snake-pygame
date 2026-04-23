@@ -10,9 +10,9 @@ DOWN          = [ 0,  1]
 ########################################################################
 #############################  SCREEN   ################################
 ########################################################################
-SCREEN_WIDTH  = 1000 # px
-SCREEN_HEIGHT = 500 # px
+SCREEN_WIDTH  = 600 # px
+SCREEN_HEIGHT = 300 # px
 
-CELL_SIZE     = 20  # px per grid square 
+CELL_SIZE     = 50   # px per grid square 
 
-FPS           = 10   # game speed
+FPS           = 8   # game speed

@@ -14,8 +14,8 @@ clock = pygame.time.Clock()
 running = True
 
 def show_game_over_menu(surface):
-    font = pygame.font.SysFont("Arial", 50)
-    font_small = pygame.font.SysFont("Arial", 30)
+    font = pygame.font.SysFont("Arial", 45)
+    font_small = pygame.font.SysFont("Arial", 20)
     
     # Textes
     title = font.render("GAME OVER :(", True, "red")
@@ -61,6 +61,38 @@ def show_pause_menu(surface):
                     paused = False
 
 
+def show_you_won_menu(surface):
+    font = pygame.font.SysFont("Arial", 50)
+    font_small = pygame.font.SysFont("Arial", 30)
+    
+    # Textes
+    title = font.render("YOU WON :)", True, "green")
+    retry_txt = font_small.render("Press R to try again", True, "white")
+    quit_txt = font_small.render("Press Q to leave", True, "white")
+    
+    # Affichage
+    surface.fill("black")
+
+    # 4. Draw of the screen
+    surface.blit(title, title.get_rect(center=(SCREEN_WIDTH//2, SCREEN_HEIGHT//2 - 50)))
+    surface.blit(retry_txt, retry_txt.get_rect(center=(SCREEN_WIDTH//2, SCREEN_HEIGHT//2 + 30)))
+    surface.blit(quit_txt, quit_txt.get_rect(center=(SCREEN_WIDTH//2, SCREEN_HEIGHT//2 + 70)))
+    pygame.display.flip()
+
+    # Boucle d'attente spécifique au menu
+    waiting = True
+    while waiting:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return "QUIT"
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_r:
+                    return "RETRY"
+                if event.key == pygame.K_q:
+                    return "QUIT"
+
+
+
 def resetGame():
     return Snake(),Apple()
 
@@ -94,6 +126,14 @@ while running:
     # Collisions handling
     if (head[0] < 0 or head[0] >= SCREEN_WIDTH) or (head[1] < 0 or head[1] >= SCREEN_HEIGHT) or head in snake.body[1:]:
         choice = show_game_over_menu(screen)
+        if choice == "RETRY":
+            snake, apple = resetGame()
+            continue
+        else:
+            running = False # On quitte
+
+    if len(snake.body) == ((SCREEN_HEIGHT // CELL_SIZE) * (SCREEN_WIDTH //CELL_SIZE)):
+        choice = show_you_won_menu(screen)
         if choice == "RETRY":
             snake, apple = resetGame()
             continue
