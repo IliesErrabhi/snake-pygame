@@ -7,33 +7,65 @@ from src.apple import *
 pygame.init()
 
 # création de la fenêtre de jeu (largeur,hauteur) en pixels
-screen = pygame.display.set_mode((1280, 720)) # surface principale
-
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT)) # surface principale
+pygame.display.set_caption("Snake 🐍")
 # s'assure que le jeu de tourne pas trop vite
 clock = pygame.time.Clock()
 running = True
-snake = Snake()
-apple = Apple()
 
+def show_game_over_menu(surface):
+    font = pygame.font.SysFont("Arial", 50)
+    font_small = pygame.font.SysFont("Arial", 30)
+    
+    # Textes
+    title = font.render("GAME OVER :(", True, "red")
+    retry_txt = font_small.render("Press R to try again", True, "white")
+    quit_txt = font_small.render("Press Q to leave", True, "white")
+    
+    # Affichage
+    surface.fill("black")
 
-def gameover(surface):
-    # 1. font cration                  #size
-    font = pygame.font.SysFont("Arial", 60)
-    
-    # 2. image creation 
-    text_surface = font.render("Game over hahaha", True, (255, 255, 255))
-    
-    # 3. Center the message
-    text_rect = text_surface.get_rect(center=(1280 // 2, 720 // 2))
-    
     # 4. Draw of the screen
-    surface.blit(text_surface, text_rect)
+    surface.blit(title, title.get_rect(center=(SCREEN_WIDTH//2, SCREEN_HEIGHT//2 - 50)))
+    surface.blit(retry_txt, retry_txt.get_rect(center=(SCREEN_WIDTH//2, SCREEN_HEIGHT//2 + 30)))
+    surface.blit(quit_txt, quit_txt.get_rect(center=(SCREEN_WIDTH//2, SCREEN_HEIGHT//2 + 70)))
     pygame.display.flip()
-    
-    # 5. Wait 3 sec before leaving
-    pygame.time.wait(3000)
+
+    # Boucle d'attente spécifique au menu
+    waiting = True
+    while waiting:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return "QUIT"
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_r:
+                    return "RETRY"
+                if event.key == pygame.K_q:
+                    return "QUIT"
 
 
+def show_pause_menu(surface):
+    font = pygame.font.SysFont("Arial", 60)
+    text = font.render("PAUSE - Press P to resume", True, "white")
+    surface.blit(text, text.get_rect(center=(SCREEN_WIDTH//2, SCREEN_HEIGHT//2)))
+    pygame.display.flip()
+
+    paused = True
+    while paused:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_p or event.key == pygame.K_ESCAPE:
+                    paused = False
+
+
+def resetGame():
+    return Snake(),Apple()
+
+
+snake,apple = resetGame()
 while running:
     # poll for events
     for event in pygame.event.get():
@@ -42,19 +74,17 @@ while running:
             running = False
 
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
+            if event.key == pygame.K_p:
+                show_pause_menu(screen)
+            elif event.key == pygame.K_ESCAPE:
                 running = False
             elif event.key == pygame.K_LEFT  and snake.direction != "RIGHT":
-                print("LEFT")
                 snake.direction = "LEFT"
             elif event.key == pygame.K_RIGHT and snake.direction != "LEFT":
-                print("RIGHT")
                 snake.direction = "RIGHT"
             elif event.key == pygame.K_UP    and snake.direction != "DOWN":
-                print("UP")
                 snake.direction = "UP"
             elif event.key == pygame.K_DOWN  and snake.direction != "UP":
-                print("DOWN")
                 snake.direction = "DOWN"
 
     # UPDATE
@@ -63,8 +93,12 @@ while running:
 
     # Collisions handling
     if (head[0] < 0 or head[0] >= SCREEN_WIDTH) or (head[1] < 0 or head[1] >= SCREEN_HEIGHT) or head in snake.body[1:]:
-        gameover(screen)
-        running = False
+        choice = show_game_over_menu(screen)
+        if choice == "RETRY":
+            snake, apple = resetGame()
+            continue
+        else:
+            running = False # On quitte
 
     # Check if the snake eats the apple
     if head == apple.position:
@@ -72,7 +106,7 @@ while running:
         apple.randomizePosition(snake.body)
 
     # fill the screen with a color to wipe away anything from last frame
-    screen.fill("black")
+    screen.fill("pink")
 
     # drawing of the apple
     apple.draw(screen)

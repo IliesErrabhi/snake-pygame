@@ -20,5 +20,7 @@ class Apple:
 
     
     def draw(self,surface):
-        pygame.draw.rect(surface,(192, 57, 43),pygame.Rect(self.position[0],self.position[1],
-                                                CELL_SIZE,CELL_SIZE))
+        img = pygame.image.load("assets/apple.png").convert_alpha()
+        img2 = pygame.transform.scale(img, (CELL_SIZE, CELL_SIZE))
+        surface.blit(img2,pygame.Rect(self.position[0],self.position[1],CELL_SIZE,CELL_SIZE))
+        
